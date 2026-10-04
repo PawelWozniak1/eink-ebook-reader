@@ -1,30 +1,30 @@
-# 📖 Czytnik e-booków DIY na e-papierze
+# 📖 DIY E-Paper E-Book Reader
 
-> **EN:** A DIY e-book reader built from scratch: ESP32-S3 + 7.5" e-paper display, a Python text-processing pipeline that turns Wolne Lektury books into a compact markup format, firmware with its own text layout engine (justification, chapters, bookmarks, deep sleep), a Wi-Fi upload page with OTA updates, and a 3D-printable case designed in OpenSCAD.
+🇬🇧 **English** · 🇵🇱 [Polski](README.pl.md)
 
-Własny czytnik książek zbudowany od zera — od przetwarzania tekstu w Pythonie, przez firmware z silnikiem składu stron, po obudowę zaprojektowaną w OpenSCAD i wydrukowaną w 3D.
+An e-book reader built from scratch. A Python pipeline prepares the books, firmware with its own page layout engine runs on an ESP32-S3, and the case was designed in OpenSCAD and 3D-printed.
 
-![Podgląd obudowy (widok rozłożony)](projekt%20obudowy/files/podglad.png)
-
----
-
-## ✨ Co potrafi
-
-- **Czytanie z prawdziwym składem tekstu** — justowanie akapitów prozy, wcięcia, łamanie zbyt długich wersów, zachowane zwrotki w poezji
-- **Automatyczne rozpoznanie prozy i wiersza** — na podstawie statystyki długości linii
-- **Rozdziały i spis treści** — każdy rozdział od nowej strony, nawigacja joystickiem
-- **4 rozmiary czcionki** z pełnymi polskimi znakami; po zmianie czytnik zostaje w tym samym miejscu tekstu
-- **Zakładki** — czytnik pamięta miejsce w każdej książce, także po wyłączeniu zasilania
-- **Oszczędzanie energii** — deep sleep po 30 min bezczynności lub na przytrzymanie przycisku, wybudzenie przyciskiem prosto na ostatnią stronę
-- **Tryb Wi-Fi** — strona w przeglądarce do wgrywania i usuwania książek oraz aktualizacji firmware'u (OTA) bez kabla
-- **Captive portal** — gdy nie ma domowej sieci, czytnik tworzy własną, a telefon sam otwiera jego stronę
-- **Bonus: kółko i krzyżyk** na dwa telefony, z planszą rysowaną na e-papierze 🎮
+![Case preview (exploded view)](projekt%20obudowy/files/podglad.png)
 
 ---
 
-## 🐍 Python: przygotowanie książek
+## ✨ Features
 
-[`przygotuj_ksiazke.py`](przygotuj_ksiazke.py) zamienia surowe pliki TXT z [Wolnych Lektur](https://wolnelektury.pl) na lekki format zrozumiały dla czytnika.
+- **Real typesetting:** justified prose paragraphs, indentation, wrapping of over-long verse lines, preserved stanza breaks in poetry
+- **Automatic prose vs. poetry detection** based on line-length statistics
+- **Chapters and table of contents:** every chapter starts on a new page, navigated with a joystick
+- **4 font sizes** with full Polish character support; after a size change the reader stays at the same place in the text
+- **Bookmarks:** the reader remembers your position in every book, even after a power cut
+- **Power saving:** deep sleep after 30 minutes of inactivity or on a long button press; waking up goes straight back to the last page
+- **Wi-Fi mode:** a web page for uploading and deleting books and for over-the-air (OTA) firmware updates, no cable needed
+- **Captive portal:** with no home network available, the reader starts its own access point and phones open its page automatically
+- **Bonus: tic-tac-toe** for two phones, with the board drawn on the e-paper 🎮
+
+---
+
+## 🐍 Python: book preparation pipeline
+
+[`przygotuj_ksiazke.py`](przygotuj_ksiazke.py) ("prepare book") converts raw TXT files from [Wolne Lektury](https://wolnelektury.pl) (a Polish public-domain library) into a lightweight format the reader understands.
 
 ```bash
 python przygotuj_ksiazke.py
@@ -34,25 +34,25 @@ Pan Tadeusz: 10742 linii, 479913 bajtów -> ksiazki_do_wgrania/pan_tadeusz.txt
 Treny: 699 linii, 28279 bajtów -> ksiazki_do_wgrania/treny.txt
 ```
 
-Co robi skrypt:
+What the script does:
 
-| Krok | Jak |
+| Step | How |
 |---|---|
-| Wycina stopkę licencyjną | wyszukanie separatora `-----` |
-| Rozpoznaje księgi *Pana Tadeusza* | wyrażenie regularne dla „Księga pierwsza … dwunasta” i „Epilog” |
-| Odróżnia podtytuł od streszczenia księgi | heurystyka: długość linii i brak wcięcia |
-| Składa *Treny* z 20 osobnych plików | `pathlib.glob` + rozbicie tytułu na tytuł i podtytuł |
-| Generuje stronę tytułową | funkcja z `*args` na dowolną liczbę podtytułów |
-| Dopasowuje tekst do czcionek mikrokontrolera | tablica zamian typograficznych znaków (`—`, `„`, `…`) |
-| Normalizuje białe znaki | scalanie pustych linii, LF zamiast CRLF, UTF-8 |
+| Strips the license footer | finds the `-----` separator |
+| Detects the books (chapters) of *Pan Tadeusz* | a regular expression for "Księga pierwsza … dwunasta" and "Epilog" |
+| Tells a chapter subtitle from its summary | heuristic based on line length and indentation |
+| Assembles *Treny* from 20 separate files | `pathlib.glob` plus splitting each heading into title and subtitle |
+| Generates a title page | a function taking `*args` for any number of subtitles |
+| Adapts the text to microcontroller fonts | a replacement table for typographic characters (`—`, `„`, `…`) |
+| Normalizes whitespace | collapses blank lines, forces LF line endings, UTF-8 |
 
-Dodanie nowej książki to jedna linia w liście `KSIAZKI` i funkcja zwracająca listę linii.
+Adding a new book takes one entry in the `KSIAZKI` list and a function that returns a list of lines.
 
-Ta sama logika jest też przepisana na JavaScript w stronie czytnika ([`strona.h`](sketch_oct1a/strona.h)), więc zwykły plik TXT można wgrać prosto z telefonu — skrypt w Pythonie lepiej radzi sobie jednak z nietypową strukturą *Pana Tadeusza* i *Trenów*.
+The same logic is also ported to JavaScript on the reader's web page ([`strona.h`](sketch_oct1a/strona.h)), so a plain TXT file can be uploaded straight from a phone. The Python script handles the unusual structure of *Pan Tadeusz* and *Treny* better.
 
-### Format pliku książki
+### Book file format
 
-Pierwsza linia to nagłówek, dalej tekst, w którym pierwszy bajt linii może być znacznikiem:
+The first line is a header. In the text after it, the first byte of each line can be a control marker:
 
 ```
 #CZYTNIK|Pan Tadeusz|Adam Mickiewicz
@@ -64,127 +64,129 @@ Pierwsza linia to nagłówek, dalej tekst, w którym pierwszy bajt linii może b
     Litwo! Ojczyzno moja! ty jesteś jak zdrowie:
 ```
 
-| Znacznik | Znaczenie |
+| Marker | Meaning |
 |---|---|
-| `\001` | tytuł rozdziału (zawsze od nowej strony) |
-| `\002` | podtytuł rozdziału |
-| `\003` | streszczenie (mniejsza czcionka, zawijane) |
-| `\004` | duży tytuł (strona tytułowa) |
-| `\005` | tekst wyśrodkowany |
-| `\006` | akapit prozy (wcięty i wyjustowany) |
-| *(brak)* | wers wiersza |
-| pusta linia | odstęp między zwrotkami |
+| `\001` | chapter title (always starts a new page) |
+| `\002` | chapter subtitle |
+| `\003` | chapter summary (smaller font, wrapped) |
+| `\004` | large title (title page) |
+| `\005` | centered text |
+| `\006` | prose paragraph (indented and justified) |
+| *(none)* | line of verse |
+| empty line | gap between stanzas |
 
-Format jest celowo prosty: czytnik nie musi parsować HTML ani EPUB-a, a jedno przejście po pliku wystarcza, żeby znaleźć rozdziały i podzielić tekst na strony.
+The format is deliberately simple. The reader doesn't have to parse HTML or EPUB, and a single pass over the file is enough to find the chapters and split the text into pages.
 
 ---
 
-## 🏗️ Architektura
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
-    WL[TXT z Wolnych Lektur] --> PY[przygotuj_ksiazke.py]
-    WL --> JS[strona WWW czytnika<br/>przygotowanie w JS]
+    WL[Wolne Lektury TXT] --> PY[przygotuj_ksiazke.py]
+    WL --> JS[reader web page<br/>JS preparation]
     PY --> TXT[#CZYTNIK format]
-    TXT -->|upload przez Wi-Fi| FS[(LittleFS<br/>pamięć flash)]
+    TXT -->|Wi-Fi upload| FS[(LittleFS<br/>flash storage)]
     JS --> FS
-    FS --> CACHE[cache bloków 8×4 KB]
-    CACHE --> LAYOUT[silnik składu stron]
-    LAYOUT --> EPD[e-papier 7,5&quot;]
-    JOY[joystick 7 kierunków] --> UI[menu / czytanie / spis treści]
+    FS --> CACHE[block cache 8×4 KB]
+    CACHE --> LAYOUT[page layout engine]
+    LAYOUT --> EPD[7.5&quot; e-paper]
+    JOY[joystick + SET/RST] --> UI[menu / reading / contents]
     UI --> LAYOUT
-    NVS[(Preferences<br/>zakładki)] <--> UI
+    NVS[(Preferences<br/>bookmarks)] <--> UI
 ```
 
-### Ciekawsze rozwiązania w firmware
+### Firmware highlights
 
-- **Książka większa niż RAM** — *Pan Tadeusz* ma ~480 KB, więc tekst jest czytany z flasha blokami po 4 KB, a 8 ostatnio używanych bloków trzymanych jest w cache'u LRU.
-- **Własny pomiar szerokości tekstu** — mierzenie przez bibliotekę przy każdym słowie było zbyt wolne, więc szerokości znaków (do U+017F, czyli z polskimi literami) są liczone raz i zapamiętywane dla każdej czcionki.
-- **Paginacja z przeliczaniem** — przy zmianie czcionki cała książka jest dzielona na strony na nowo, a czytnik wraca do tego samego miejsca w tekście, nie do tego samego numeru strony.
-- **Zakładki w NVS** — klucze w `Preferences` mogą mieć maks. 15 znaków, więc nazwa pliku jest zamieniana na hash FNV-1a; jest też migracja zakładek ze starszej wersji firmware'u.
-- **Bezpieczny upload** — plik zapisuje się pod tymczasową nazwą i dopiero po skończeniu podmienia, więc przerwane wgrywanie nie psuje istniejącej książki. Nazwy plików są czyszczone ze znaków spoza `a-z0-9_-`.
-- **Odświeżanie e-papieru** — szybkie częściowe odświeżanie przy przewracaniu stron i pełne co 20 stron, żeby nie zostawały powidoki.
+- **Books larger than RAM:** *Pan Tadeusz* is about 480 KB, so the text is read from flash in 4 KB blocks and the 8 most recently used blocks are kept in an LRU cache.
+- **Custom text measurement:** asking the graphics library to measure every word was too slow, so glyph advance widths (up to U+017F, which covers all Polish letters) are computed once and cached for each font.
+- **Re-pagination:** when the font size changes, the whole book is split into pages again and the reader returns to the same position in the text, not the same page number.
+- **Bookmarks in NVS:** `Preferences` keys are limited to 15 characters, so file names are hashed with FNV-1a. Bookmarks from an older firmware version are migrated automatically.
+- **Safe uploads:** an uploaded file is written under a temporary name and only swapped in once complete, so an interrupted upload never corrupts an existing book. File names are sanitized to `a-z0-9_-`.
+- **E-paper refresh strategy:** fast partial refresh when turning pages and a full refresh every 20 pages to clear ghosting.
 
 ---
 
-## 🔧 Sprzęt
+## 🔧 Hardware
 
-| Element | Model |
+| Part | Model |
 |---|---|
-| Mikrokontroler | ESP32-S3-DevKitC-1 |
-| Wyświetlacz | Waveshare e-Paper 7,5" 800×480 (GDEY075T7) + HAT |
-| Sterowanie | joystick 5-kierunkowy + SET + RST |
-| Zasilanie | LiPo 523450 + ładowarka TP4056 (USB-C) |
+| Microcontroller | ESP32-S3-DevKitC-1 |
+| Display | Waveshare e-Paper 7.5" 800×480 (GDEY075T7) + HAT |
+| Controls | 5-way joystick + SET + RST |
+| Power | LiPo 523450 + TP4056 USB-C charger |
 
 <details>
-<summary>Podłączenie</summary>
+<summary>Wiring</summary>
 
-| Sygnał | GPIO |
+| Signal | GPIO |
 |---|---|
-| e-papier CS / DC / RST / BUSY | 8 / 9 / 10 / 4 |
-| e-papier SCK / MOSI | 18 / 17 |
+| e-paper CS / DC / RST / BUSY | 8 / 9 / 10 / 4 |
+| e-paper SCK / MOSI | 18 / 17 |
 | UP / DWN / LFT / RHT / MID | 5 / 6 / 7 / 15 / 16 |
 | SET / RST | 21 / 47 |
 
-Przyciski zwierają do GND (wewnętrzne pull-upy).
+Buttons pull to GND (internal pull-ups).
 </details>
 
-### Obsługa
+### Controls
 
-| Przycisk | Czytanie | Menu | Spis treści |
+| Button | Reading | Menu | Contents |
 |---|---|---|---|
-| UP / DWN | poprzednia / następna strona | wybór książki | wybór rozdziału |
-| LFT | początek / poprzedni rozdział | ostatnio czytana | powrót |
-| RHT | następny rozdział | otwórz | przejdź |
-| MID | menu (przytrzymanie: uśpij) | otwórz | przejdź |
-| SET | spis treści | — | powrót |
-| RST | rozmiar czcionki | — | — |
+| UP / DWN | previous / next page | select book | select chapter |
+| LFT | chapter start / previous chapter | last read book | back |
+| RHT | next chapter | open | go to |
+| MID | menu (hold: sleep) | open | go to |
+| SET | table of contents | — | back |
+| RST | font size | — | — |
 
 ---
 
-## 🖨️ Obudowa
+## 🖨️ Case
 
-Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](projekt%20obudowy/files/czytnik_eink.scad). Wszystkie wymiary (panel, luzy, położenie baterii, ESP32 i ładowarki, gniazda USB-C, przycisk z tyłu) są zmiennymi, więc obudowę łatwo dopasować do innego egzemplarza wyświetlacza.
+A parametric OpenSCAD design: [`czytnik_eink.scad`](projekt%20obudowy/files/czytnik_eink.scad). Every dimension is a variable: panel size, tolerances, positions of the battery, ESP32 and charger, the USB-C ports and the rear button. That makes it easy to adapt the case to a different display.
 
-Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka. Gotowe pliki są w formatach STL i OBJ.
-
----
-
-## 🚀 Uruchomienie
-
-1. **Arduino IDE** z obsługą ESP32 oraz bibliotekami `GxEPD2` i `U8g2_for_Adafruit_GFX`.
-2. Płytka: *ESP32S3 Dev Module*, **Partition Scheme** z OTA i SPIFFS, np. *Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)*.
-3. Wgraj szkic z folderu [`sketch_oct1a/`](sketch_oct1a/).
-4. Przygotuj książki: `python przygotuj_ksiazke.py`.
-5. Na czytniku wybierz **Wgraj książki (WiFi)**, otwórz w przeglądarce adres z ekranu (albo `http://czytnik.local`) i wgraj pliki z `ksiazki_do_wgrania/`.
-
-Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) albo z Arduino IDE przez port sieciowy.
+It prints as three parts: the front bezel, a support plate behind the panel and the back cover. Ready-made STL and OBJ files are included.
 
 ---
 
-## 📁 Struktura
+## 🚀 Getting started
+
+1. **Arduino IDE** with ESP32 support and the `GxEPD2` and `U8g2_for_Adafruit_GFX` libraries.
+2. Board: *ESP32S3 Dev Module*. Pick a **Partition Scheme** with OTA and SPIFFS, e.g. *Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)*.
+3. Flash the sketch from [`sketch_oct1a/`](sketch_oct1a/).
+4. Prepare the books: `python przygotuj_ksiazke.py`.
+5. On the reader, choose **Wgraj książki (WiFi)** ("Upload books"), open the address shown on screen (or `http://czytnik.local`) and upload the files from `ksiazki_do_wgrania/`.
+
+Later firmware versions can be uploaded through the same page (a `.bin` file) or from the Arduino IDE over the network port.
+
+---
+
+## 📁 Project structure
 
 ```
-├── przygotuj_ksiazke.py      # Python: TXT z Wolnych Lektur -> format czytnika
+├── przygotuj_ksiazke.py      # Python: Wolne Lektury TXT -> reader format
 ├── PanTadeusz_WolneLektury.txt
-├── treny_czesci/             # 20 plików z Trenami (źródło)
-├── ksiazki_do_wgrania/       # wynik skryptu, gotowe do wgrania
+├── treny_czesci/             # Treny source, 20 files
+├── ksiazki_do_wgrania/       # script output, ready to upload
 ├── sketch_oct1a/
-│   ├── sketch_oct1a.ino      # główny program: skład stron, menu, zakładki, usypianie
-│   ├── siec.ino              # Wi-Fi, serwer WWW, upload, OTA, captive portal
-│   ├── strona.h              # strona WWW (HTML/CSS/JS w PROGMEM)
-│   ├── gra.ino / gra.h       # kółko i krzyżyk
+│   ├── sketch_oct1a.ino      # main program: layout, menu, bookmarks, sleep
+│   ├── siec.ino              # Wi-Fi, web server, uploads, OTA, captive portal
+│   ├── strona.h              # web page (HTML/CSS/JS in PROGMEM)
+│   ├── gra.ino / gra.h       # tic-tac-toe
 └── projekt obudowy/
-    ├── files/                # OpenSCAD + STL + podgląd
-    └── files obj/            # te same części w OBJ
+    ├── files/                # OpenSCAD + STL + preview
+    └── files obj/            # the same parts as OBJ
 ```
+
+The code and its comments are in Polish.
 
 ---
 
-## 🛠️ Technologie
+## 🛠️ Tech stack
 
-**Python** (pathlib, re) · **C++ / Arduino** (ESP32-S3, LittleFS, NVS, deep sleep) · **GxEPD2, U8g2** · **HTML / CSS / JavaScript** · **WebServer, DNSServer, mDNS, ArduinoOTA** · **OpenSCAD** · druk 3D
+**Python** (pathlib, re) · **C++ / Arduino** (ESP32-S3, LittleFS, NVS, deep sleep) · **GxEPD2, U8g2** · **HTML / CSS / JavaScript** · **WebServer, DNSServer, mDNS, ArduinoOTA** · **OpenSCAD** · 3D printing
 
-## 📜 Licencja i źródła
+## 📜 License and sources
 
-Teksty *Pana Tadeusza* i *Trenów* pochodzą z [Wolnych Lektur](https://wolnelektury.pl) i należą do domeny publicznej.
+The texts of *Pan Tadeusz* (Adam Mickiewicz) and *Treny* (Jan Kochanowski) come from [Wolne Lektury](https://wolnelektury.pl) and are in the public domain.
