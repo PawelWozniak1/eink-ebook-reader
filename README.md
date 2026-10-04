@@ -83,17 +83,17 @@ The format is deliberately simple. The reader doesn't have to parse HTML or EPUB
 
 ```mermaid
 flowchart LR
-    WL[Wolne Lektury TXT] --> PY[przygotuj_ksiazke.py]
-    WL --> JS[reader web page<br/>JS preparation]
-    PY --> TXT[#CZYTNIK format]
-    TXT -->|Wi-Fi upload| FS[(LittleFS<br/>flash storage)]
+    WL["Wolne Lektury TXT"] --> PY["przygotuj_ksiazke.py"]
+    WL --> JS["reader web page<br/>JS preparation"]
+    PY --> TXT["CZYTNIK format"]
+    TXT -->|"Wi-Fi upload"| FS[("LittleFS<br/>flash storage")]
     JS --> FS
-    FS --> CACHE[block cache 8×4 KB]
-    CACHE --> LAYOUT[page layout engine]
-    LAYOUT --> EPD[7.5&quot; e-paper]
-    JOY[joystick + SET/RST] --> UI[menu / reading / contents]
+    FS --> CACHE["block cache 8×4 KB"]
+    CACHE --> LAYOUT["page layout engine"]
+    LAYOUT --> EPD["7.5 inch e-paper"]
+    JOY["joystick + SET/RST"] --> UI["menu / reading / contents"]
     UI --> LAYOUT
-    NVS[(Preferences<br/>bookmarks)] <--> UI
+    NVS[("Preferences<br/>bookmarks")] <--> UI
 ```
 
 ### Firmware highlights

@@ -83,17 +83,17 @@ Format jest celowo prosty: czytnik nie musi parsować HTML ani EPUB-a, a jedno p
 
 ```mermaid
 flowchart LR
-    WL[TXT z Wolnych Lektur] --> PY[przygotuj_ksiazke.py]
-    WL --> JS[strona WWW czytnika<br/>przygotowanie w JS]
-    PY --> TXT[#CZYTNIK format]
-    TXT -->|upload przez Wi-Fi| FS[(LittleFS<br/>pamięć flash)]
+    WL["TXT z Wolnych Lektur"] --> PY["przygotuj_ksiazke.py"]
+    WL --> JS["strona WWW czytnika<br/>przygotowanie w JS"]
+    PY --> TXT["format CZYTNIK"]
+    TXT -->|"upload przez Wi-Fi"| FS[("LittleFS<br/>pamięć flash")]
     JS --> FS
-    FS --> CACHE[cache bloków 8×4 KB]
-    CACHE --> LAYOUT[silnik składu stron]
-    LAYOUT --> EPD[e-papier 7,5&quot;]
-    JOY[joystick + SET/RST] --> UI[menu / czytanie / spis treści]
+    FS --> CACHE["cache bloków 8×4 KB"]
+    CACHE --> LAYOUT["silnik składu stron"]
+    LAYOUT --> EPD["e-papier 7,5 cala"]
+    JOY["joystick + SET/RST"] --> UI["menu / czytanie / spis treści"]
     UI --> LAYOUT
-    NVS[(Preferences<br/>zakładki)] <--> UI
+    NVS[("Preferences<br/>zakładki")] <--> UI
 ```
 
 ### Ciekawsze rozwiązania w firmware
