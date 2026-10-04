@@ -1,7 +1,7 @@
 """Kopiuje fonty używane przez czytnik z biblioteki U8g2_for_Adafruit_GFX do folderu fonty/.
 
 Uruchamia się raz (fonty są już w repozytorium), np. po dodaniu nowego fontu do firmware'u:
-    python symulator/wyciagnij_fonty.py "C:/Users/.../Arduino/libraries/U8g2_for_Adafruit_GFX/src/u8g2_fonts.c"
+    python tools/symulator/wyciagnij_fonty.py "C:/Users/.../Arduino/libraries/U8g2_for_Adafruit_GFX/src/u8g2_fonts.c"
 """
 
 import sys

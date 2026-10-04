@@ -1,6 +1,6 @@
 """Symulator czytnika: składa książkę na strony tak jak firmware i zapisuje je jako PNG.
 
-Algorytm jest przeniesiony 1:1 z sketch_oct1a.ino (ulozStrone, podzielNaStrony,
+Algorytm jest przeniesiony 1:1 z firmware/czytnik/czytnik.ino (ulozStrone, podzielNaStrony,
 rysujStrone), a litery rysowane są tymi samymi fontami u8g2 co na urządzeniu,
 więc podział na strony i wygląd zgadzają się z prawdziwym ekranem.
 
@@ -20,7 +20,7 @@ from u8g2_font import U8g2Font
 
 FONTY = Path(__file__).parent / "fonty"
 
-# --- stałe z sketch_oct1a.ino ---
+# --- stałe z firmware/czytnik/czytnik.ino ---
 SZEROKOSC, WYSOKOSC = 480, 800   # ekran obrócony pionowo
 MARGINES = MARGINES_PRAWY = 30
 GORA_TEKSTU = 40
@@ -321,7 +321,7 @@ def montaz(strony: list[Image.Image], odstep: int = 40) -> Image.Image:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Podgląd stron książki tak, jak pokaże je czytnik.")
-    parser.add_argument("ksiazka", type=Path, help="plik z ksiazki_do_wgrania/")
+    parser.add_argument("ksiazka", type=Path, help="plik z books/prepared/")
     parser.add_argument("-s", "--strony", type=int, nargs="+", help="numery stron (domyślnie wszystkie)")
     parser.add_argument("-r", "--rozmiar", type=int, choices=range(4), default=1,
                         help="rozmiar czcionki: 0 mała, 1 średnia, 2 duża, 3 bardzo duża")

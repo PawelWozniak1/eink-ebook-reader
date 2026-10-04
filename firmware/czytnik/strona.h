@@ -65,7 +65,7 @@ Plik o tej samej nazwie zostanie zastąpiony.</p>
 <section>
 <h2>Aktualizacja programu</h2>
 <p class="info">W Arduino IDE: <i>Szkic → Eksportuj skompilowany plik binarny</i>.
-Potem wybierz tutaj plik <b>sketch_oct1a.ino.bin</b> z folderu <i>build</i> obok szkicu
+Potem wybierz tutaj plik <b>czytnik.ino.bin</b> z folderu <i>build</i> obok szkicu
 (nie ten z „merged” w nazwie).</p>
 <input type="file" id="bin" accept=".bin">
 <p><button id="aktualizuj">Wgraj program</button></p>
@@ -259,7 +259,7 @@ $('siec').onsubmit = async e => {
 $('aktualizuj').onclick = async () => {
   const p = $('bin').files[0];
   if (!p || !p.name.endsWith('.bin')) { $('stanBin').textContent = 'Wybierz plik .bin'; return; }
-  if (p.name.includes('merged')) { $('stanBin').textContent = 'To plik „merged” - wybierz sketch_oct1a.ino.bin'; return; }
+  if (p.name.includes('merged')) { $('stanBin').textContent = 'To plik „merged” - wybierz czytnik.ino.bin'; return; }
   $('aktualizuj').disabled = true;
   $('stanBin').textContent = 'Wgrywam program… nie wyłączaj czytnika.';
   const dane = new FormData();

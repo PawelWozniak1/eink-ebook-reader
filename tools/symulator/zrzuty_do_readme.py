@@ -1,11 +1,11 @@
-"""Generuje obrazki do README (folder docs/). Uruchomienie: python symulator/zrzuty_do_readme.py"""
+"""Generuje obrazki do README (folder docs/). Uruchomienie: python tools/symulator/zrzuty_do_readme.py"""
 
 from pathlib import Path
 
 from czytnik import Czytnik, Ksiazka, montaz
 
-KORZEN = Path(__file__).parent.parent
-KSIAZKI = KORZEN / "ksiazki_do_wgrania"
+KORZEN = Path(__file__).parent.parent.parent
+KSIAZKI = KORZEN / "books" / "prepared"
 DOCS = KORZEN / "docs"
 
 if __name__ == "__main__":

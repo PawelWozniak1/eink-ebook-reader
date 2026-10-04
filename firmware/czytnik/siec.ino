@@ -319,7 +319,7 @@ void odbierzProgram() {
     Serial.printf("Aktualizacja: %s\n", u.filename.c_str());
     bladProgramu = "";
     // plik "merged" zawiera bootloader i zepsułby czytnik
-    if (u.filename.indexOf("merged") >= 0) bladProgramu = "to plik merged, wybierz sketch_oct1a.ino.bin";
+    if (u.filename.indexOf("merged") >= 0) bladProgramu = "to plik merged, wybierz czytnik.ino.bin";
     else if (!Update.begin(UPDATE_SIZE_UNKNOWN)) bladProgramu = Update.errorString();
   } else if (u.status == UPLOAD_FILE_WRITE) {
     if (bladProgramu.length()) return;

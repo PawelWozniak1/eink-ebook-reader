@@ -28,14 +28,14 @@ An e-book reader built from scratch. A Python pipeline prepares the books, firmw
 
 ## 🐍 Python: book preparation pipeline
 
-[`przygotuj_ksiazke.py`](przygotuj_ksiazke.py) ("prepare book") converts raw TXT files from [Wolne Lektury](https://wolnelektury.pl) (a Polish public-domain library) into a lightweight format the reader understands.
+[`przygotuj_ksiazke.py`](tools/przygotuj_ksiazke.py) ("prepare book") converts raw TXT files from [Wolne Lektury](https://wolnelektury.pl) (a Polish public-domain library) into a lightweight format the reader understands.
 
 ```bash
-python przygotuj_ksiazke.py
+python tools/przygotuj_ksiazke.py
 ```
 ```
-Pan Tadeusz: 10742 linii, 479913 bajtów -> ksiazki_do_wgrania/pan_tadeusz.txt
-Treny: 699 linii, 28279 bajtów -> ksiazki_do_wgrania/treny.txt
+Pan Tadeusz: 10742 linii, 479913 bajtów -> books/prepared/pan_tadeusz.txt
+Treny: 699 linii, 28279 bajtów -> books/prepared/treny.txt
 ```
 
 What the script does:
@@ -52,7 +52,7 @@ What the script does:
 
 Adding a new book takes one entry in the `KSIAZKI` list and a function that returns a list of lines.
 
-The same logic is also ported to JavaScript on the reader's web page ([`strona.h`](sketch_oct1a/strona.h)), so a plain TXT file can be uploaded straight from a phone. The Python script handles the unusual structure of *Pan Tadeusz* and *Treny* better.
+The same logic is also ported to JavaScript on the reader's web page ([`strona.h`](firmware/czytnik/strona.h)), so a plain TXT file can be uploaded straight from a phone. The Python script handles the unusual structure of *Pan Tadeusz* and *Treny* better.
 
 ### Book file format
 
@@ -85,11 +85,11 @@ The format is deliberately simple. The reader doesn't have to parse HTML or EPUB
 
 ## 🖥️ Python: reader simulator
 
-[`symulator/`](symulator/) renders a book exactly as the device shows it and saves the pages as PNG files. It is a Python port of the firmware's layout engine, so you can check how a book looks without flashing anything.
+[`tools/symulator/`](tools/symulator/) renders a book exactly as the device shows it and saves the pages as PNG files. It is a Python port of the firmware's layout engine, so you can check how a book looks without flashing anything.
 
 ```bash
 pip install -r requirements.txt
-python symulator/czytnik.py ksiazki_do_wgrania/pan_tadeusz.txt -s 0 1 2 -m preview.png
+python tools/symulator/czytnik.py books/prepared/pan_tadeusz.txt -s 0 1 2 -m preview.png
 ```
 ```
 Pan Tadeusz: 308 stron, 13 rozdziałów, wiersz, czcionka średnia
@@ -102,25 +102,25 @@ Pan Tadeusz: 308 stron, 13 rozdziałów, wiersz, czcionka średnia
 
 How it works:
 
-- **u8g2 font decoder** ([`u8g2_font.py`](symulator/u8g2_font.py)). The fonts in the firmware are bitmap fonts stored as bit-level run-length encoded byte arrays inside a C source file. The decoder parses C string literals (octal and hex escapes), reads the 23-byte header, finds glyphs via the ASCII lists and the Unicode jump table, and unpacks the RLE bitmaps. Text width follows the library's quirks exactly, e.g. the last glyph counts with its bitmap width, not its advance.
-- **Layout engine port** ([`czytnik.py`](symulator/czytnik.py)). The code mirrors `ulozStrone`, `podzielNaStrony` and `rysujStrone` from the firmware and works on UTF-8 byte offsets like the C++ code does. Bookmark positions saved by the device therefore point at the same place in the simulator.
+- **u8g2 font decoder** ([`u8g2_font.py`](tools/symulator/u8g2_font.py)). The fonts in the firmware are bitmap fonts stored as bit-level run-length encoded byte arrays inside a C source file. The decoder parses C string literals (octal and hex escapes), reads the 23-byte header, finds glyphs via the ASCII lists and the Unicode jump table, and unpacks the RLE bitmaps. Text width follows the library's quirks exactly, e.g. the last glyph counts with its bitmap width, not its advance.
+- **Layout engine port** ([`czytnik.py`](tools/symulator/czytnik.py)). The code mirrors `ulozStrone`, `podzielNaStrony` and `rysujStrone` from the firmware and works on UTF-8 byte offsets like the C++ code does. Bookmark positions saved by the device therefore point at the same place in the simulator.
 - **CLI** built with `argparse`: pick pages, a font size, an output folder, or a single side-by-side montage.
 - **Tests** ([`tests/`](tests/)) run on GitHub Actions. They cover the bit reader, the C literal parser, Polish glyphs in every font, text measurement, and pagination invariants: pages cover the whole text, every chapter starts a new page, and a larger font gives more pages.
 
-The images in this README are generated with `python symulator/zrzuty_do_readme.py`.
+The images in this README are generated with `python tools/symulator/zrzuty_do_readme.py`.
 
 ---
 
 ## 🔌 Firmware
 
-The Arduino code lives in [`sketch_oct1a/`](sketch_oct1a/), about 1,900 lines of C++, HTML and JavaScript:
+The Arduino code lives in [`firmware/czytnik/`](firmware/czytnik/), about 1,900 lines of C++, HTML and JavaScript:
 
 | File | What's inside |
 |---|---|
-| [`sketch_oct1a.ino`](sketch_oct1a/sketch_oct1a.ino) | main loop, buttons, block cache, layout engine, justification, menu, table of contents, bookmarks, deep sleep |
-| [`siec.ino`](sketch_oct1a/siec.ino) | Wi-Fi (home network or own access point), web server, book upload and delete, firmware upload, ArduinoOTA, captive portal |
-| [`strona.h`](sketch_oct1a/strona.h) | the upload web page (HTML/CSS/JS in `PROGMEM`), including the JS port of the book preparation |
-| [`gra.ino`](sketch_oct1a/gra.ino) / [`gra.h`](sketch_oct1a/gra.h) | tic-tac-toe for two phones: game state, player slots with timeouts, board drawn on the e-paper |
+| [`czytnik.ino`](firmware/czytnik/czytnik.ino) | main loop, buttons, block cache, layout engine, justification, menu, table of contents, bookmarks, deep sleep |
+| [`siec.ino`](firmware/czytnik/siec.ino) | Wi-Fi (home network or own access point), web server, book upload and delete, firmware upload, ArduinoOTA, captive portal |
+| [`strona.h`](firmware/czytnik/strona.h) | the upload web page (HTML/CSS/JS in `PROGMEM`), including the JS port of the book preparation |
+| [`gra.ino`](firmware/czytnik/gra.ino) / [`gra.h`](firmware/czytnik/gra.h) | tic-tac-toe for two phones: game state, player slots with timeouts, board drawn on the e-paper |
 
 ---
 
@@ -189,9 +189,9 @@ Buttons pull to GND (internal pull-ups).
 
 ## 🖨️ Case
 
-![Case preview (exploded view)](projekt%20obudowy/files/podglad.png)
+![Case preview (exploded view)](hardware/case/podglad.png)
 
-A parametric OpenSCAD design: [`czytnik_eink.scad`](projekt%20obudowy/files/czytnik_eink.scad). Every dimension is a variable: panel size, tolerances, positions of the battery, ESP32 and charger, the USB-C ports and the rear button. That makes it easy to adapt the case to a different display.
+A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). Every dimension is a variable: panel size, tolerances, positions of the battery, ESP32 and charger, the USB-C ports and the rear button. That makes it easy to adapt the case to a different display.
 
 It prints as three parts: the front bezel, a support plate behind the panel and the back cover. Ready-made STL and OBJ files are included.
 
@@ -201,9 +201,9 @@ It prints as three parts: the front bezel, a support plate behind the panel and 
 
 1. **Arduino IDE** with ESP32 support and the `GxEPD2` and `U8g2_for_Adafruit_GFX` libraries.
 2. Board: *ESP32S3 Dev Module*. Pick a **Partition Scheme** with OTA and SPIFFS, e.g. *Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)*.
-3. Flash the sketch from [`sketch_oct1a/`](sketch_oct1a/).
-4. Prepare the books: `python przygotuj_ksiazke.py`. Optionally preview them with the simulator.
-5. On the reader, choose **Wgraj książki (WiFi)** ("Upload books"), open the address shown on screen (or `http://czytnik.local`) and upload the files from `ksiazki_do_wgrania/`.
+3. Flash the sketch from [`firmware/czytnik/`](firmware/czytnik/).
+4. Prepare the books: `python tools/przygotuj_ksiazke.py`. Optionally preview them with the simulator.
+5. On the reader, choose **Wgraj książki (WiFi)** ("Upload books"), open the address shown on screen (or `http://czytnik.local`) and upload the files from `books/prepared/`.
 
 Later firmware versions can be uploaded through the same page (a `.bin` file) or from the Arduino IDE over the network port.
 
@@ -212,25 +212,24 @@ Later firmware versions can be uploaded through the same page (a `.bin` file) or
 ## 📁 Project structure
 
 ```
-├── przygotuj_ksiazke.py      # Python: Wolne Lektury TXT -> reader format
-├── PanTadeusz_WolneLektury.txt
-├── treny_czesci/             # Treny source, 20 files
-├── ksiazki_do_wgrania/       # script output, ready to upload
-├── symulator/
-│   ├── czytnik.py            # layout engine port + CLI
-│   ├── u8g2_font.py          # u8g2 bitmap font decoder
-│   ├── fonty/                # the 6 fonts used by the firmware
-│   └── zrzuty_do_readme.py   # regenerates docs/*.png
-├── tests/                    # unittest, run on GitHub Actions
-├── docs/                     # README images
-├── sketch_oct1a/
-│   ├── sketch_oct1a.ino      # main program: layout, menu, bookmarks, sleep
-│   ├── siec.ino              # Wi-Fi, web server, uploads, OTA, captive portal
-│   ├── strona.h              # web page (HTML/CSS/JS in PROGMEM)
-│   ├── gra.ino / gra.h       # tic-tac-toe
-└── projekt obudowy/
-    ├── files/                # OpenSCAD + STL + preview
-    └── files obj/            # the same parts as OBJ
+├── books/
+│   ├── source/                    # input: Wolne Lektury TXT (Pan Tadeusz, 20 Treny files)
+│   └── prepared/                  # output: #CZYTNIK format, ready to upload
+├── tools/
+│   ├── przygotuj_ksiazke.py       # Python: source TXT -> reader format
+│   └── symulator/
+│       ├── czytnik.py             # layout engine port + CLI
+│       ├── u8g2_font.py           # u8g2 bitmap font decoder
+│       ├── fonty/                 # the 6 fonts used by the firmware
+│       └── zrzuty_do_readme.py    # regenerates docs/*.png
+├── firmware/czytnik/              # Arduino sketch (open czytnik.ino)
+│   ├── czytnik.ino                # main program: layout, menu, bookmarks, sleep
+│   ├── siec.ino                   # Wi-Fi, web server, uploads, OTA, captive portal
+│   ├── strona.h                   # web page (HTML/CSS/JS in PROGMEM)
+│   └── gra.ino / gra.h            # tic-tac-toe
+├── hardware/case/                 # OpenSCAD source, preview, stl/, obj/
+├── tests/                         # unittest, run on GitHub Actions
+└── docs/                          # README images
 ```
 
 The code and its comments are in Polish.
@@ -245,4 +244,4 @@ The code and its comments are in Polish.
 
 The texts of *Pan Tadeusz* (Adam Mickiewicz) and *Treny* (Jan Kochanowski) come from [Wolne Lektury](https://wolnelektury.pl) and are in the public domain.
 
-The bitmap fonts in `symulator/fonty/` come from the [u8g2](https://github.com/olikraus/u8g2) project, which redistributes them under their original X11/Adobe licenses.
+The bitmap fonts in `tools/symulator/fonty/` come from the [u8g2](https://github.com/olikraus/u8g2) project, which redistributes them under their original X11/Adobe licenses.

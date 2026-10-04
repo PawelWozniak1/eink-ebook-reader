@@ -1,5 +1,5 @@
 # Zamienia pliki TXT z Wolnych Lektur na pliki gotowe do wgrania do czytnika
-# (folder ksiazki_do_wgrania). Uruchomienie: python przygotuj_ksiazke.py
+# (folder books/prepared). Uruchomienie: python tools/przygotuj_ksiazke.py
 #
 # Pliki wgrywa się przez stronę czytnika (w menu czytnika: "Wgraj książki (WiFi)").
 # Zwykłe pliki TXT z Wolnych Lektur też można tam wgrywać bezpośrednio - strona sama
@@ -18,8 +18,9 @@
 import re
 from pathlib import Path
 
-FOLDER = Path(__file__).parent
-CEL = FOLDER / "ksiazki_do_wgrania"
+KSIAZKI = Path(__file__).parent.parent / "books"
+ZRODLA = KSIAZKI / "source"
+CEL = KSIAZKI / "prepared"
 
 # czcionki u8g2 "_te" nie mają tych znaków
 ZAMIANY = {"—": "-", "–": "-", "…": "...", "„": "\"", "”": "\"", "’": "'"}
@@ -40,7 +41,7 @@ def strona_tytulowa(autor, tytul, *podtytuly):
 def pan_tadeusz():
     ksiegi = re.compile(r"^(Księga (pierwsza|druga|trzecia|czwarta|piąta|szósta|siódma|ósma|"
                         r"dziewiąta|dziesiąta|jedenasta|dwunasta)|Epilog)$")
-    linie = bez_stopki((FOLDER / "PanTadeusz_WolneLektury.txt").read_text(encoding="utf-8").splitlines())
+    linie = bez_stopki((ZRODLA / "PanTadeusz_WolneLektury.txt").read_text(encoding="utf-8").splitlines())
     start = next(i for i, l in enumerate(linie) if ksiegi.match(l))
 
     wynik = strona_tytulowa("Adam Mickiewicz", "Pan Tadeusz",
@@ -73,7 +74,7 @@ def pan_tadeusz():
 
 def treny():
     wynik = strona_tytulowa("Jan Kochanowski", "Treny")
-    for plik in sorted((FOLDER / "treny_czesci").glob("*.txt")):
+    for plik in sorted((ZRODLA / "treny").glob("*.txt")):
         linie = bez_stopki(plik.read_text(encoding="utf-8").splitlines())
         # 0: autor, 2: "Treny", 3: tytuł części, potem treść
         tytul = linie[3].strip().strip("[]")

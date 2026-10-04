@@ -3,13 +3,13 @@ import unittest
 from pathlib import Path
 
 KORZEN = Path(__file__).parent.parent
-sys.path.insert(0, str(KORZEN / "symulator"))
+sys.path.insert(0, str(KORZEN / "tools" / "symulator"))
 
 from czytnik import DOL_TEKSTU, SZEROKOSC, WYSOKOSC, Czytnik, Ksiazka  # noqa: E402
 from u8g2_font import U8g2Font, _CzytnikBitow, _literal_c  # noqa: E402
 
-FONTY = sorted((KORZEN / "symulator" / "fonty").glob("*.u8g2"))
-KSIAZKI = KORZEN / "ksiazki_do_wgrania"
+FONTY = sorted((KORZEN / "tools" / "symulator" / "fonty").glob("*.u8g2"))
+KSIAZKI = KORZEN / "books" / "prepared"
 
 
 class TestDekoderaFontow(unittest.TestCase):
