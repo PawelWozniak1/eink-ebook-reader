@@ -2,9 +2,13 @@
 
 🇬🇧 [English](README.md) · 🇵🇱 **Polski**
 
+[![tests](https://github.com/PawelWozniak1/eink-ebook-reader/actions/workflows/tests.yml/badge.svg)](https://github.com/PawelWozniak1/eink-ebook-reader/actions/workflows/tests.yml)
+
 Własny czytnik książek zbudowany od zera — od przetwarzania tekstu w Pythonie, przez firmware z silnikiem składu stron, po obudowę zaprojektowaną w OpenSCAD i wydrukowaną w 3D.
 
-![Podgląd obudowy (widok rozłożony)](projekt%20obudowy/files/podglad.png)
+![Strony wygenerowane przez symulator](docs/strony_pan_tadeusz.png)
+
+<sub>Strony narysowane przez symulator w Pythonie fontami z czytnika: strona tytułowa, początek księgi z podtytułem i streszczeniem oraz zwykła strona ze stopką.</sub>
 
 ---
 
@@ -79,6 +83,47 @@ Format jest celowo prosty: czytnik nie musi parsować HTML ani EPUB-a, a jedno p
 
 ---
 
+## 🖥️ Python: symulator czytnika
+
+[`symulator/`](symulator/) składa książkę dokładnie tak, jak pokaże ją czytnik, i zapisuje strony jako PNG. To przeniesiony do Pythona silnik składu stron z firmware'u, więc wygląd książki można sprawdzić bez wgrywania czegokolwiek.
+
+```bash
+pip install -r requirements.txt
+python symulator/czytnik.py ksiazki_do_wgrania/pan_tadeusz.txt -s 0 1 2 -m podglad.png
+```
+```
+Pan Tadeusz: 308 stron, 13 rozdziałów, wiersz, czcionka średnia
+-> podglad.png
+```
+
+![Ta sama strona w trzech rozmiarach czcionki](docs/rozmiary_czcionki.png)
+
+<sub>Tren I w czcionce małej, średniej i bardzo dużej. Zbyt długie wersy zawijają się z wcięciem, a liczba stron w stopce zmienia się razem z rozmiarem czcionki.</sub>
+
+Jak to działa:
+
+- **Dekoder fontów u8g2** ([`u8g2_font.py`](symulator/u8g2_font.py)). Fonty z firmware'u to fonty bitmapowe zapisane w pliku C jako tablice bajtów skompresowane kodowaniem długości serii (RLE) na poziomie bitów. Dekoder parsuje literały napisów C (escape'y ósemkowe i szesnastkowe), czyta 23-bajtowy nagłówek, wyszukuje glify w listach ASCII i tablicy skoków Unicode, a potem rozpakowuje bitmapy. Szerokość tekstu liczy dokładnie tak jak biblioteka, łącznie z jej osobliwościami, np. ostatni znak liczony jest szerokością bitmapy, a nie przesunięciem kursora.
+- **Port silnika składu** ([`czytnik.py`](symulator/czytnik.py)). Kod odwzorowuje `ulozStrone`, `podzielNaStrony` i `rysujStrone` z firmware'u i tak jak C++ operuje na pozycjach bajtów w UTF-8. Zakładka zapisana przez czytnik wskazuje więc to samo miejsce w symulatorze.
+- **CLI** w `argparse`: wybór stron, rozmiaru czcionki, folderu wyjściowego albo jednego obrazka ze stronami obok siebie.
+- **Testy** ([`tests/`](tests/)) uruchamiane w GitHub Actions. Sprawdzają czytnik bitów, parser literałów C, polskie litery we wszystkich fontach, pomiar tekstu i niezmienniki podziału na strony: strony pokrywają cały tekst, każdy rozdział zaczyna się od nowej strony, a większa czcionka daje więcej stron.
+
+Obrazki w README generuje `python symulator/zrzuty_do_readme.py`.
+
+---
+
+## 🔌 Firmware
+
+Kod Arduino jest w folderze [`sketch_oct1a/`](sketch_oct1a/). To ok. 1900 linii C++, HTML i JavaScriptu:
+
+| Plik | Co zawiera |
+|---|---|
+| [`sketch_oct1a.ino`](sketch_oct1a/sketch_oct1a.ino) | pętla główna, przyciski, cache bloków, silnik składu, justowanie, menu, spis treści, zakładki, deep sleep |
+| [`siec.ino`](sketch_oct1a/siec.ino) | Wi-Fi (domowa sieć albo własna), serwer WWW, wgrywanie i usuwanie książek, aktualizacja programu, ArduinoOTA, captive portal |
+| [`strona.h`](sketch_oct1a/strona.h) | strona do wgrywania (HTML/CSS/JS w `PROGMEM`), razem z przygotowywaniem książek w JS |
+| [`gra.ino`](sketch_oct1a/gra.ino) / [`gra.h`](sketch_oct1a/gra.h) | kółko i krzyżyk na dwa telefony: stan gry, miejsca graczy z wygasaniem, plansza na e-papierze |
+
+---
+
 ## 🏗️ Architektura
 
 ```mermaid
@@ -144,6 +189,8 @@ Przyciski zwierają do GND (wewnętrzne pull-upy).
 
 ## 🖨️ Obudowa
 
+![Podgląd obudowy (widok rozłożony)](projekt%20obudowy/files/podglad.png)
+
 Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](projekt%20obudowy/files/czytnik_eink.scad). Wszystkie wymiary (panel, luzy, położenie baterii, ESP32 i ładowarki, gniazda USB-C, przycisk z tyłu) są zmiennymi, więc obudowę łatwo dopasować do innego egzemplarza wyświetlacza.
 
 Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka. Gotowe pliki są w formatach STL i OBJ.
@@ -155,7 +202,7 @@ Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klap
 1. **Arduino IDE** z obsługą ESP32 oraz bibliotekami `GxEPD2` i `U8g2_for_Adafruit_GFX`.
 2. Płytka: *ESP32S3 Dev Module*, **Partition Scheme** z OTA i SPIFFS, np. *Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)*.
 3. Wgraj szkic z folderu [`sketch_oct1a/`](sketch_oct1a/).
-4. Przygotuj książki: `python przygotuj_ksiazke.py`.
+4. Przygotuj książki: `python przygotuj_ksiazke.py`. Możesz je obejrzeć w symulatorze.
 5. Na czytniku wybierz **Wgraj książki (WiFi)**, otwórz w przeglądarce adres z ekranu (albo `http://czytnik.local`) i wgraj pliki z `ksiazki_do_wgrania/`.
 
 Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) albo z Arduino IDE przez port sieciowy.
@@ -169,6 +216,13 @@ Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) 
 ├── PanTadeusz_WolneLektury.txt
 ├── treny_czesci/             # 20 plików z Trenami (źródło)
 ├── ksiazki_do_wgrania/       # wynik skryptu, gotowe do wgrania
+├── symulator/
+│   ├── czytnik.py            # port silnika składu + CLI
+│   ├── u8g2_font.py          # dekoder fontów bitmapowych u8g2
+│   ├── fonty/                # 6 fontów używanych przez firmware
+│   └── zrzuty_do_readme.py   # generuje docs/*.png
+├── tests/                    # testy unittest, uruchamiane w GitHub Actions
+├── docs/                     # obrazki do README
 ├── sketch_oct1a/
 │   ├── sketch_oct1a.ino      # główny program: skład stron, menu, zakładki, usypianie
 │   ├── siec.ino              # Wi-Fi, serwer WWW, upload, OTA, captive portal
@@ -183,8 +237,10 @@ Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) 
 
 ## 🛠️ Technologie
 
-**Python** (pathlib, re) · **C++ / Arduino** (ESP32-S3, LittleFS, NVS, deep sleep) · **GxEPD2, U8g2** · **HTML / CSS / JavaScript** · **WebServer, DNSServer, mDNS, ArduinoOTA** · **OpenSCAD** · druk 3D
+**Python** (pathlib, re, Pillow, argparse, dataclasses, unittest) · **GitHub Actions** · **C++ / Arduino** (ESP32-S3, LittleFS, NVS, deep sleep) · **GxEPD2, U8g2** · **HTML / CSS / JavaScript** · **WebServer, DNSServer, mDNS, ArduinoOTA** · **OpenSCAD** · druk 3D
 
 ## 📜 Licencja i źródła
 
 Teksty *Pana Tadeusza* i *Trenów* pochodzą z [Wolnych Lektur](https://wolnelektury.pl) i należą do domeny publicznej.
+
+Fonty bitmapowe w `symulator/fonty/` pochodzą z projektu [u8g2](https://github.com/olikraus/u8g2), który rozpowszechnia je na ich oryginalnych licencjach X11/Adobe.
