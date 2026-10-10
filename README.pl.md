@@ -197,7 +197,9 @@ Czytnik trzyma się pionowo. Opis jest od przodu, tak jak patrzysz na tekst:
 | ESP32 | na dole, na środku, gniazda USB w dolnej ściance, antena do góry |
 | dzielniki | na małej płytce tuż obok GPIO1 i GPIO2 |
 
-Przewody przycisków schodzą jednym pasem wzdłuż lewej krawędzi i przechodzą pod płytką ESP do prawej listwy, więc ESP stoi na listwach z 2–3 mm prześwitu. Rysunek z wszystkimi przewodami, kolorami i tabelą połączeń: [`docs/okablowanie.html`](docs/okablowanie.html) (pobierz i otwórz w przeglądarce).
+Przewody przycisków schodzą jednym pasem wzdłuż lewej krawędzi i przechodzą pod płytką ESP do prawej listwy, więc ESP stoi na listwach z 2–3 mm prześwitu. Pełny opis z zasadami prowadzenia przewodów i tabelą połączeń: [`docs/okablowanie.md`](docs/okablowanie.md).
+
+<img src="docs/okablowanie.svg" alt="Rozmieszczenie płytek i przewodów, widok od przodu" width="520">
 </details>
 
 ### Obsługa
@@ -221,7 +223,7 @@ Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](hardware/case/czytnik_ei
 
 Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka. Gotowe pliki są w formatach STL i OBJ.
 
-> Projekt obudowy odpowiada jeszcze wcześniejszemu rozmieszczeniu elektroniki. Nowy układ (joystick w klapce, gniazdo ładowania w prawej ściance, ESP na dole) opisuje [`docs/okablowanie.html`](docs/okablowanie.html).
+> Projekt obudowy odpowiada jeszcze wcześniejszemu rozmieszczeniu elektroniki. Nowy układ (joystick w klapce, gniazdo ładowania w prawej ściance, ESP na dole) opisuje [`docs/okablowanie.md`](docs/okablowanie.md).
 
 ---
 
@@ -245,6 +247,7 @@ Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) 
 │   └── prepared/                  # wyjście: format #CZYTNIK, gotowe do wgrania
 ├── tools/
 │   ├── przygotuj_ksiazke.py       # Python: źródłowy TXT -> format czytnika
+│   ├── okablowanie.py             # generuje docs/okablowanie.svg i .md
 │   └── symulator/
 │       ├── czytnik.py             # port silnika składu + CLI
 │       ├── u8g2_font.py           # dekoder fontów bitmapowych u8g2

@@ -197,7 +197,9 @@ The reader is held in portrait. Positions are given from the front, as you look 
 | ESP32 | bottom centre, USB ports in the bottom wall, antenna up |
 | dividers | on a small board right next to GPIO1 and GPIO2 |
 
-The button wires run down the left edge as one bundle and pass under the ESP board to its right header, so the ESP sits on its headers with 2–3 mm of clearance. The full wiring drawing with wire colours and a connection table (in Polish): [`docs/okablowanie.html`](docs/okablowanie.html) (download it and open it in a browser).
+The button wires run down the left edge as one bundle and pass under the ESP board to its right header, so the ESP sits on its headers with 2–3 mm of clearance. Routing rules and the full connection table (in Polish): [`docs/okablowanie.md`](docs/okablowanie.md).
+
+<img src="docs/okablowanie.svg" alt="Board and wire layout, front view" width="520">
 </details>
 
 ### Controls
@@ -221,7 +223,7 @@ A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.s
 
 It prints as three parts: the front bezel, a support plate behind the panel and the back cover. Ready-made STL and OBJ files are included.
 
-> The case design still follows the earlier electronics layout. The new one (joystick in the back cover, charging port in the right wall, ESP at the bottom) is described in [`docs/okablowanie.html`](docs/okablowanie.html).
+> The case design still follows the earlier electronics layout. The new one (joystick in the back cover, charging port in the right wall, ESP at the bottom) is described in [`docs/okablowanie.md`](docs/okablowanie.md).
 
 ---
 
@@ -245,6 +247,7 @@ Later firmware versions can be uploaded through the same page (a `.bin` file) or
 │   └── prepared/                  # output: #CZYTNIK format, ready to upload
 ├── tools/
 │   ├── przygotuj_ksiazke.py       # Python: source TXT -> reader format
+│   ├── okablowanie.py             # generates docs/okablowanie.svg and .md
 │   └── symulator/
 │       ├── czytnik.py             # layout engine port + CLI
 │       ├── u8g2_font.py           # u8g2 bitmap font decoder
