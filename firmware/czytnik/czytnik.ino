@@ -27,6 +27,8 @@
 // w menu wybierz "Wgraj książki (WiFi)" i otwórz w przeglądarce adres pokazany na ekranie.
 // Tam można też wgrać nowy program (.bin) bez kabla. Kod WiFi jest w siec.ino.
 //
+// Stan baterii i ładowanie widać w menu (bateria.ino).
+//
 // Arduino IDE: Narzędzia > Partition Scheme musi mieć OTA i SPIFFS (tam trafia LittleFS),
 // np. "Default 4MB with spiffs (1.2MB APP/1.5MB SPIFFS)". Schematy z FATFS albo "No OTA" nie zadziałają.
 
@@ -42,7 +44,7 @@
 GxEPD2_BW<GxEPD2_750_GDEY075T7, GxEPD2_750_GDEY075T7::HEIGHT> display(
   GxEPD2_750_GDEY075T7(/*CS=*/ 8, /*DC=*/ 9, /*RST=*/ 10, /*BUSY=*/ 4)
 );
-const char* WERSJA = "5 (spis treści, czcionka)";  // pokazywana w trybie WiFi i na stronie
+const char* WERSJA = "6 (bateria)";  // pokazywana w trybie WiFi i na stronie
 
 U8G2_FOR_ADAFRUIT_GFX u8g2Fonts;
 Preferences pamiec;
@@ -640,6 +642,7 @@ void rysujMenu() {
 
   u8g2Fonts.setFont(u8g2_font_ncenB24_te);
   naSrodku("Biblioteka", 80);
+  rysujBaterie(MARGINES, 80);
   display.drawLine(MARGINES, 100, W - MARGINES_PRAWY, 100, GxEPD_BLACK);
 
   int od = wybrana / NA_EKRANIE * NA_EKRANIE;
@@ -698,6 +701,7 @@ void odswiez(bool pelne) {
     display.setPartialWindow(0, 0, display.width(), display.height());
     odswiezenOdPelnego++;
   }
+  zmierzBaterie();
   Serial.println("  rysuje");
   display.firstPage();
   do {
@@ -885,7 +889,11 @@ void uspij() {
   // gdyby MID był jeszcze trzymany, czytnik od razu by się obudził
   while (digitalRead(pinyPrzyciskow[SRODEK]) == LOW) delay(10);
   delay(50);
+  zasnij();
+}
 
+// głęboki sen, z którego budzi tylko MID (ekran zostaje taki, jaki jest)
+void zasnij() {
   gpio_num_t pin = (gpio_num_t)pinyPrzyciskow[SRODEK];
   rtc_gpio_pullup_en(pin);
   rtc_gpio_pulldown_dis(pin);
@@ -960,5 +968,6 @@ void loop() {
   }
   // w trybie WiFi nie usypiamy, żeby nie przerwać wgrywania
   if (ekran != WIFI && millis() - ostatniaAktywnosc > USPIJ_PO) uspij();
+  pilnujBaterii();
   delay(ekran == WIFI ? 2 : 20);
 }
