@@ -20,6 +20,7 @@ Własny czytnik książek zbudowany od zera — od przetwarzania tekstu w Python
 - **4 rozmiary czcionki** z pełnymi polskimi znakami; po zmianie czytnik zostaje w tym samym miejscu tekstu
 - **Zakładki** — czytnik pamięta miejsce w każdej książce, także po wyłączeniu zasilania
 - **Oszczędzanie energii** — deep sleep po 30 min bezczynności lub na przytrzymanie przycisku, wybudzenie przyciskiem prosto na ostatnią stronę
+- **Stan baterii** w menu biblioteki: procent albo błyskawica podczas ładowania, automatyczne uśpienie przy rozładowanej baterii
 - **Tryb Wi-Fi** — strona w przeglądarce do wgrywania i usuwania książek oraz aktualizacji firmware'u (OTA) bez kabla
 - **Captive portal** — gdy nie ma domowej sieci, czytnik tworzy własną, a telefon sam otwiera jego stronę
 - **Bonus: kółko i krzyżyk** na dwa telefony, z planszą rysowaną na e-papierze 🎮
@@ -118,6 +119,7 @@ Kod Arduino jest w folderze [`firmware/czytnik/`](firmware/czytnik/). To ok. 190
 | Plik | Co zawiera |
 |---|---|
 | [`czytnik.ino`](firmware/czytnik/czytnik.ino) | pętla główna, przyciski, cache bloków, silnik składu, justowanie, menu, spis treści, zakładki, deep sleep |
+| [`bateria.ino`](firmware/czytnik/bateria.ino) | pomiar napięcia baterii (ADC), procent z krzywej rozładowania LiPo, wykrywanie ładowarki, ochrona przed głębokim rozładowaniem |
 | [`siec.ino`](firmware/czytnik/siec.ino) | Wi-Fi (domowa sieć albo własna), serwer WWW, wgrywanie i usuwanie książek, aktualizacja programu, ArduinoOTA, captive portal |
 | [`strona.h`](firmware/czytnik/strona.h) | strona do wgrywania (HTML/CSS/JS w `PROGMEM`), razem z przygotowywaniem książek w JS |
 | [`gra.ino`](firmware/czytnik/gra.ino) / [`gra.h`](firmware/czytnik/gra.h) | kółko i krzyżyk na dwa telefony: stan gry, miejsca graczy z wygasaniem, plansza na e-papierze |
@@ -159,7 +161,7 @@ flowchart LR
 | Mikrokontroler | ESP32-S3-DevKitC-1 |
 | Wyświetlacz | Waveshare e-Paper 7,5" 800×480 (GDEY075T7) + HAT |
 | Sterowanie | joystick 5-kierunkowy + SET + RST |
-| Zasilanie | LiPo 523450 + ładowarka TP4056 (USB-C) |
+| Zasilanie | LiPo 523450 1000 mAh + ładowarka TP4056 (USB-C) + przetwornica Pololu S7V8F3 (3,3 V) |
 
 <details>
 <summary>Podłączenie</summary>
@@ -170,8 +172,32 @@ flowchart LR
 | e-papier SCK / MOSI | 18 / 17 |
 | UP / DWN / LFT / RHT / MID | 5 / 6 / 7 / 15 / 16 |
 | SET / RST | 21 / 47 |
+| napięcie baterii (dzielnik 100k/100k z TP4056 OUT+) | 1 |
+| ładowarka podłączona (dzielnik 100k/100k z TP4056 IN+) | 2 |
 
-Przyciski zwierają do GND (wewnętrzne pull-upy).
+Przyciski zwierają do GND (wewnętrzne pull-upy). Nowsze HAT-y mają 9. pin PWR: idzie razem z VCC na 3V3, więc ekran jest zasilany cały czas.
+
+Zasilanie: bateria → TP4056 (B+/B−) → OUT+/OUT− → Pololu S7V8F3 (VIN/GND) → VOUT na pin **3V3** ESP32. Pin 5V zostaje pusty. Przy wgrywaniu programu kablem USB baterię trzeba odłączyć.
+
+Dzielniki do pomiaru baterii są opcjonalne: bez nich czytnik działa, tylko nie pokazuje stanu baterii. Jak je zbudować: [`docs/dzielnik_baterii.md`](docs/dzielnik_baterii.md).
+</details>
+
+<details>
+<summary>Rozmieszczenie w obudowie</summary>
+
+Czytnik trzyma się pionowo. Opis jest od przodu, tak jak patrzysz na tekst:
+
+| Element | Gdzie |
+|---|---|
+| joystick (z SET i RST) | w tylnej klapce, z lewej u góry, grzybkiem na zewnątrz |
+| TP4056 | przy prawej krawędzi, u góry, gniazdo USB-C w prawej ściance |
+| przetwornica Pololu | poziomo pod ładowarką, pinami w stronę środka |
+| bateria | u góry, między joystickiem a ładowarką |
+| HAT | przy prawej krawędzi, na wysokości taśmy FPC (środek prawej krawędzi matrycy) |
+| ESP32 | na dole, na środku, gniazda USB w dolnej ściance, antena do góry |
+| dzielniki | na małej płytce tuż obok GPIO1 i GPIO2 |
+
+Przewody przycisków schodzą jednym pasem wzdłuż lewej krawędzi i przechodzą pod płytką ESP do prawej listwy, więc ESP stoi na listwach z 2–3 mm prześwitu. Rysunek z wszystkimi przewodami, kolorami i tabelą połączeń: [`docs/okablowanie.html`](docs/okablowanie.html) (pobierz i otwórz w przeglądarce).
 </details>
 
 ### Obsługa
@@ -194,6 +220,8 @@ Przyciski zwierają do GND (wewnętrzne pull-upy).
 Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). Wszystkie wymiary (panel, luzy, położenie baterii, ESP32 i ładowarki, gniazda USB-C, przycisk z tyłu) są zmiennymi, więc obudowę łatwo dopasować do innego egzemplarza wyświetlacza.
 
 Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka. Gotowe pliki są w formatach STL i OBJ.
+
+> Projekt obudowy odpowiada jeszcze wcześniejszemu rozmieszczeniu elektroniki. Nowy układ (joystick w klapce, gniazdo ładowania w prawej ściance, ESP na dole) opisuje [`docs/okablowanie.html`](docs/okablowanie.html).
 
 ---
 
@@ -224,12 +252,13 @@ Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) 
 │       └── zrzuty_do_readme.py    # generuje docs/*.png
 ├── firmware/czytnik/              # szkic Arduino (otwórz czytnik.ino)
 │   ├── czytnik.ino                # główny program: skład stron, menu, zakładki, usypianie
+│   ├── bateria.ino                # stan baterii i ładowania
 │   ├── siec.ino                   # Wi-Fi, serwer WWW, upload, OTA, captive portal
 │   ├── strona.h                   # strona WWW (HTML/CSS/JS w PROGMEM)
 │   └── gra.ino / gra.h            # kółko i krzyżyk
 ├── hardware/case/                 # projekt OpenSCAD, podgląd, stl/, obj/
 ├── tests/                         # testy unittest, uruchamiane w GitHub Actions
-└── docs/                          # obrazki do README
+└── docs/                          # obrazki do README, rysunek okablowania, instrukcja dzielnika
 ```
 
 ---

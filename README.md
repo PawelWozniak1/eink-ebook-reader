@@ -20,6 +20,7 @@ An e-book reader built from scratch. A Python pipeline prepares the books, firmw
 - **4 font sizes** with full Polish character support; after a size change the reader stays at the same place in the text
 - **Bookmarks:** the reader remembers your position in every book, even after a power cut
 - **Power saving:** deep sleep after 30 minutes of inactivity or on a long button press; waking up goes straight back to the last page
+- **Battery status** in the library menu: percentage, or a lightning bolt while charging; automatic sleep when the battery runs flat
 - **Wi-Fi mode:** a web page for uploading and deleting books and for over-the-air (OTA) firmware updates, no cable needed
 - **Captive portal:** with no home network available, the reader starts its own access point and phones open its page automatically
 - **Bonus: tic-tac-toe** for two phones, with the board drawn on the e-paper 🎮
@@ -118,6 +119,7 @@ The Arduino code lives in [`firmware/czytnik/`](firmware/czytnik/), about 1,900 
 | File | What's inside |
 |---|---|
 | [`czytnik.ino`](firmware/czytnik/czytnik.ino) | main loop, buttons, block cache, layout engine, justification, menu, table of contents, bookmarks, deep sleep |
+| [`bateria.ino`](firmware/czytnik/bateria.ino) | battery voltage via ADC, percentage from a LiPo discharge curve, charger detection, deep-discharge protection |
 | [`siec.ino`](firmware/czytnik/siec.ino) | Wi-Fi (home network or own access point), web server, book upload and delete, firmware upload, ArduinoOTA, captive portal |
 | [`strona.h`](firmware/czytnik/strona.h) | the upload web page (HTML/CSS/JS in `PROGMEM`), including the JS port of the book preparation |
 | [`gra.ino`](firmware/czytnik/gra.ino) / [`gra.h`](firmware/czytnik/gra.h) | tic-tac-toe for two phones: game state, player slots with timeouts, board drawn on the e-paper |
@@ -159,7 +161,7 @@ flowchart LR
 | Microcontroller | ESP32-S3-DevKitC-1 |
 | Display | Waveshare e-Paper 7.5" 800×480 (GDEY075T7) + HAT |
 | Controls | 5-way joystick + SET + RST |
-| Power | LiPo 523450 + TP4056 USB-C charger |
+| Power | LiPo 523450 1000 mAh + TP4056 USB-C charger + Pololu S7V8F3 (3.3 V buck-boost) |
 
 <details>
 <summary>Wiring</summary>
@@ -170,8 +172,32 @@ flowchart LR
 | e-paper SCK / MOSI | 18 / 17 |
 | UP / DWN / LFT / RHT / MID | 5 / 6 / 7 / 15 / 16 |
 | SET / RST | 21 / 47 |
+| battery voltage (100k/100k divider from TP4056 OUT+) | 1 |
+| charger present (100k/100k divider from TP4056 IN+) | 2 |
 
-Buttons pull to GND (internal pull-ups).
+Buttons pull to GND (internal pull-ups). Newer HATs have a 9th pin, PWR: it goes to 3V3 together with VCC, so the display is always powered.
+
+Power path: battery → TP4056 (B+/B−) → OUT+/OUT− → Pololu S7V8F3 (VIN/GND) → VOUT to the ESP32 **3V3** pin. The 5V pin stays unconnected. Unplug the battery before flashing over USB.
+
+The battery dividers are optional: without them the reader works, it just doesn't show the battery level. How to build them (in Polish): [`docs/dzielnik_baterii.md`](docs/dzielnik_baterii.md).
+</details>
+
+<details>
+<summary>Layout inside the case</summary>
+
+The reader is held in portrait. Positions are given from the front, as you look at the text:
+
+| Part | Where |
+|---|---|
+| joystick (with SET and RST) | in the back cover, top left, stick facing out |
+| TP4056 | right edge, top, USB-C port in the right wall |
+| Pololu converter | lying flat below the charger, pins towards the middle |
+| battery | top, between the joystick and the charger |
+| HAT | right edge, level with the FPC ribbon (middle of the panel's right edge) |
+| ESP32 | bottom centre, USB ports in the bottom wall, antenna up |
+| dividers | on a small board right next to GPIO1 and GPIO2 |
+
+The button wires run down the left edge as one bundle and pass under the ESP board to its right header, so the ESP sits on its headers with 2–3 mm of clearance. The full wiring drawing with wire colours and a connection table (in Polish): [`docs/okablowanie.html`](docs/okablowanie.html) (download it and open it in a browser).
 </details>
 
 ### Controls
@@ -194,6 +220,8 @@ Buttons pull to GND (internal pull-ups).
 A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). Every dimension is a variable: panel size, tolerances, positions of the battery, ESP32 and charger, the USB-C ports and the rear button. That makes it easy to adapt the case to a different display.
 
 It prints as three parts: the front bezel, a support plate behind the panel and the back cover. Ready-made STL and OBJ files are included.
+
+> The case design still follows the earlier electronics layout. The new one (joystick in the back cover, charging port in the right wall, ESP at the bottom) is described in [`docs/okablowanie.html`](docs/okablowanie.html).
 
 ---
 
@@ -224,12 +252,13 @@ Later firmware versions can be uploaded through the same page (a `.bin` file) or
 │       └── zrzuty_do_readme.py    # regenerates docs/*.png
 ├── firmware/czytnik/              # Arduino sketch (open czytnik.ino)
 │   ├── czytnik.ino                # main program: layout, menu, bookmarks, sleep
+│   ├── bateria.ino                # battery and charging status
 │   ├── siec.ino                   # Wi-Fi, web server, uploads, OTA, captive portal
 │   ├── strona.h                   # web page (HTML/CSS/JS in PROGMEM)
 │   └── gra.ino / gra.h            # tic-tac-toe
 ├── hardware/case/                 # OpenSCAD source, preview, stl/, obj/
 ├── tests/                         # unittest, run on GitHub Actions
-└── docs/                          # README images
+└── docs/                          # README images, wiring drawing, divider guide
 ```
 
 The code and its comments are in Polish.
