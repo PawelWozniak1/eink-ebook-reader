@@ -198,9 +198,13 @@ Czytnik trzyma się pionowo. Opis jest od przodu, tak jak patrzysz na tekst:
 | dzielniki | na małej płytce tuż obok GPIO1 i GPIO2 |
 
 Przewody przycisków schodzą jednym pasem wzdłuż lewej krawędzi i przechodzą pod płytką ESP do prawej listwy, więc ESP stoi na listwach z 2–3 mm prześwitu. Pełny opis z zasadami prowadzenia przewodów i tabelą połączeń: [`docs/okablowanie.md`](docs/okablowanie.md).
-
-<img src="docs/okablowanie.svg" alt="Rozmieszczenie płytek i przewodów, widok od przodu" width="520">
 </details>
+
+### Okablowanie
+
+Widok od przodu, czytnik w pionie, ekran jak przezroczysty. Zasady prowadzenia przewodów i tabela połączeń: [`docs/okablowanie.md`](docs/okablowanie.md).
+
+<p align="center"><img src="docs/okablowanie.svg" alt="Rozmieszczenie płytek i przewodów, widok od przodu" width="560"></p>
 
 ### Obsługa
 

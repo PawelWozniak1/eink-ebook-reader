@@ -198,9 +198,13 @@ The reader is held in portrait. Positions are given from the front, as you look 
 | dividers | on a small board right next to GPIO1 and GPIO2 |
 
 The button wires run down the left edge as one bundle and pass under the ESP board to its right header, so the ESP sits on its headers with 2–3 mm of clearance. Routing rules and the full connection table (in Polish): [`docs/okablowanie.md`](docs/okablowanie.md).
-
-<img src="docs/okablowanie.svg" alt="Board and wire layout, front view" width="520">
 </details>
+
+### Wiring
+
+Front view, reader in portrait, display drawn as if transparent. Routing rules and the connection table (in Polish): [`docs/okablowanie.md`](docs/okablowanie.md).
+
+<p align="center"><img src="docs/okablowanie.svg" alt="Board and wire layout, front view" width="560"></p>
 
 ### Controls
 
