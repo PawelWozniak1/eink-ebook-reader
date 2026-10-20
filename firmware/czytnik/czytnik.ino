@@ -51,7 +51,9 @@ Preferences pamiec;
 
 // --- przyciski ---
 enum { GORA, DOL, LEWO, PRAWO, SRODEK, SET_, RST_, ILE_PRZYCISKOW };
-const int pinyPrzyciskow[ILE_PRZYCISKOW] = {5, 6, 7, 15, 16, 21, 47};
+// Joystick siedzi w klapce do góry nogami: pad UP (GPIO5) to fizycznie dół, a DWN (GPIO6) góra,
+// więc GORA czyta GPIO6, a DOL GPIO5. Lewo i prawo zgadzają się z napisami na module.
+const int pinyPrzyciskow[ILE_PRZYCISKOW] = {6, 5, 7, 15, 16, 21, 47};
 const char* nazwyPrzyciskow[ILE_PRZYCISKOW] = {"UP", "DWN", "LFT", "RHT", "MID", "SET", "RST"};
 bool byloWcisniete[ILE_PRZYCISKOW];
 unsigned long wcisnietyOd[ILE_PRZYCISKOW];  // 0 = wciśnięcia nie widzieliśmy (np. trzymany przy starcie)

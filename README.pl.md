@@ -175,7 +175,7 @@ flowchart LR
 | napięcie baterii (dzielnik 100k/100k z TP4056 OUT+) | 1 |
 | ładowarka podłączona (dzielnik 100k/100k z TP4056 IN+) | 2 |
 
-Przyciski zwierają do GND (wewnętrzne pull-upy). Nowsze HAT-y mają 9. pin PWR: idzie razem z VCC na 3V3, więc ekran jest zasilany cały czas.
+Przyciski zwierają do GND (wewnętrzne pull-upy). Joystick w klapce jest odwrócony, więc program traktuje pad UP (GPIO5) jako dół, a DWN (GPIO6) jako górę. Nowsze HAT-y mają 9. pin PWR: idzie razem z VCC na 3V3, więc ekran jest zasilany cały czas.
 
 Zasilanie: bateria → TP4056 (B+/B−) → OUT+/OUT− → Pololu S7V8F3 (VIN/GND) → VOUT na pin **3V3** ESP32. Pin 5V zostaje pusty. Przy wgrywaniu programu kablem USB baterię trzeba odłączyć.
 

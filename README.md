@@ -175,7 +175,7 @@ flowchart LR
 | battery voltage (100k/100k divider from TP4056 OUT+) | 1 |
 | charger present (100k/100k divider from TP4056 IN+) | 2 |
 
-Buttons pull to GND (internal pull-ups). Newer HATs have a 9th pin, PWR: it goes to 3V3 together with VCC, so the display is always powered.
+Buttons pull to GND (internal pull-ups). The joystick sits upside down in the back cover, so the firmware reads the UP pad (GPIO5) as down and DWN (GPIO6) as up. Newer HATs have a 9th pin, PWR: it goes to 3V3 together with VCC, so the display is always powered.
 
 Power path: battery → TP4056 (B+/B−) → OUT+/OUT− → Pololu S7V8F3 (VIN/GND) → VOUT to the ESP32 **3V3** pin. The 5V pin stays unconnected. Unplug the battery before flashing over USB.
 
