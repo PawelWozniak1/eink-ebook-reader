@@ -221,13 +221,20 @@ Front view, reader in portrait, display drawn as if transparent. Routing rules a
 
 ## 🖨️ Case
 
+<p align="center"><img src="hardware/case/wizualizacja.png" alt="Closed case, front and back" width="760"></p>
+
+A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). The case is 128.7 × 174.8 × 16.3 mm and holds all the electronics behind the panel. The image is centred: a strip on the left balances the panel's wider border on the FPC side. A replaceable 1 mm acrylic protector (114.4 × 170.6 mm) sits in front of the panel, and the edges are rounded, more at the back, so the reader feels thinner in the hand.
+
+<p align="center"><img src="hardware/case/uklad.svg" alt="Board layout inside the case, front view" width="480"></p>
+
+- **Back cover:** the joystick sits on posts, with the knob 1.5 mm proud. SET and RST are flexure keys with pushers, under a shallow recess for a leather patch.
+- **Ports:** USB-C charging in the right wall, ESP USB for programming in the bottom wall.
+- **Room for plugs:** free space beside the ESP for Dupont plugs on the side pins.
+- **Checks:** every dimension is a variable, and the file checks that no two boards overlap.
+
+It prints as three parts: the front bezel, a support plate behind the panel and the back cover with seats for the boards. Ready-made STL and OBJ files are included. Previews: `part = "closed"`, `"exploded"`, `"layout"`.
+
 ![Case preview (exploded view)](hardware/case/podglad.png)
-
-A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). Every dimension is a variable: panel size, tolerances, positions of the battery, ESP32 and charger, the USB-C ports and the rear button. That makes it easy to adapt the case to a different display.
-
-It prints as three parts: the front bezel, a support plate behind the panel and the back cover. Ready-made STL and OBJ files are included.
-
-> The case design still follows the earlier electronics layout. The new one (joystick in the back cover, charging port in the right wall, ESP at the bottom) is described in [`docs/okablowanie.md`](docs/okablowanie.md).
 
 ---
 

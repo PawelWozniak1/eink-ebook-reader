@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-14 -14 156.68 208.8" width="658" height="877" font-family="DejaVu Sans, Segoe UI, Arial, sans-serif">
+<rect x="-14" y="-14" width="156.68" height="208.8" fill="#f4f5f2"/>
+<defs><pattern id="h" width="2" height="2" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="2" height="2" fill="#f6dfc0"/><line x1="0" y1="0" x2="0" y2="2" stroke="#e39b47" stroke-width="0.7"/></pattern></defs>
+<rect x="0" y="0" width="128.68" height="174.8" rx="5" fill="#8f9a92"/>
+<rect x="2" y="2" width="124.68" height="170.8" rx="1" fill="#e2e6e1"/>
+<rect x="12.68" y="2.3000000000000114" width="111.2" height="170.2" fill="none" stroke="#a3aab2" stroke-width="0.5" stroke-dasharray="2 1"/>
+<rect x="15.379999999999999" y="5.800000000000011" width="97.92" height="163.2" fill="none" stroke="#0b6b72" stroke-width="0.6" stroke-dasharray="3 1.5"/>
+<rect x="32.63" y="114.05000000000001" width="16" height="57" fill="url(#h)" stroke="#e39b47" stroke-width="0.3"/>
+<rect x="75.63" y="114.05000000000001" width="16" height="57" fill="url(#h)" stroke="#e39b47" stroke-width="0.3"/>
+<text x="40.63" y="144.8" font-size="2.6" fill="#a8621e" text-anchor="middle" transform="rotate(-90 40.63 144.8)">wtyki Dupont</text>
+<text x="83.63" y="144.8" font-size="2.6" fill="#a8621e" text-anchor="middle" transform="rotate(-90 83.63 144.8)">wtyki Dupont</text>
+<rect x="48.63" y="108.05000000000001" width="27" height="63" rx="1" fill="#26292d" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="62.13" y="143.05" font-size="3.3" font-weight="600" fill="#fff" text-anchor="middle">ESP32-S3</text>
+<text x="62.13" y="147.05" font-size="2.5" fill="#fff" fill-opacity="0.8" text-anchor="middle">27×57</text>
+<rect x="3.85" y="73.05000000000001" width="25" height="32" rx="1" fill="#c7a467" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="16.35" y="89.05000000000001" font-size="3.3" font-weight="600" fill="#fff" text-anchor="middle">dzielnik</text>
+<text x="16.35" y="93.05000000000001" font-size="2.5" fill="#fff" fill-opacity="0.8" text-anchor="middle">25×32</text>
+<rect x="93.83" y="54.900000000000006" width="31" height="65" rx="1" fill="#2c5a9a" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="109.33" y="87.4" font-size="3.3" font-weight="600" fill="#fff" text-anchor="middle">HAT</text>
+<text x="109.33" y="91.4" font-size="2.5" fill="#fff" fill-opacity="0.8" text-anchor="middle">31×65</text>
+<rect x="95.83" y="3.8500000000000227" width="29" height="18" rx="1" fill="#2c5a9a" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="110.33" y="12.850000000000023" font-size="3.3" font-weight="600" fill="#fff" text-anchor="middle">TP4056</text>
+<text x="110.33" y="16.850000000000023" font-size="2.5" fill="#fff" fill-opacity="0.8" text-anchor="middle">29×18</text>
+<rect x="106.83" y="24.850000000000023" width="18" height="12" rx="1" fill="#2e7148" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="115.83" y="30.850000000000023" font-size="2.6" font-weight="600" fill="#fff" text-anchor="middle">Pololu</text>
+<text x="115.83" y="34.050000000000026" font-size="2.1" fill="#fff" fill-opacity="0.8" text-anchor="middle">18×12</text>
+<rect x="30.85" y="6.850000000000023" width="50" height="62" rx="1" fill="#9ea8b0" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="55.85" y="37.85000000000002" font-size="3.3" font-weight="600" fill="#fff" text-anchor="middle">LiPo 405063</text>
+<text x="55.85" y="41.85000000000002" font-size="2.5" fill="#fff" fill-opacity="0.8" text-anchor="middle">50×62</text>
+<rect x="3.85" y="3.8500000000000227" width="26" height="41" rx="1" fill="#2e7148" stroke="#1b1f1d" stroke-width="0.3"/>
+<text x="16.85" y="36.85000000000002" font-size="3.3" font-weight="600" fill="#fff" text-anchor="middle">joystick</text>
+<text x="16.85" y="40.85000000000002" font-size="2.5" fill="#fff" fill-opacity="0.8" text-anchor="middle">26×41 · w klapce</text>
+<circle cx="16.85" cy="23.850000000000023" r="5.25" fill="#5f6b63" stroke="#fff" stroke-width="0.4"/>
+<circle cx="16.85" cy="23.850000000000023" r="4" fill="#1b1f1d"/>
+<rect x="8.85" y="10.350000000000023" width="6" height="6.5" rx="0.6" fill="none" stroke="#fff" stroke-width="0.4"/>
+<text x="11.85" y="13.850000000000023" font-size="1.9" fill="#fff" text-anchor="middle">SET</text>
+<rect x="19.85" y="10.350000000000023" width="6" height="6.5" rx="0.6" fill="none" stroke="#fff" stroke-width="0.4"/>
+<text x="22.85" y="13.850000000000023" font-size="1.9" fill="#fff" text-anchor="middle">RST</text>
+<rect x="50.63" y="108.65" width="23" height="6" fill="none" stroke="#e0705a" stroke-width="0.4" stroke-dasharray="1 0.7"/>
+<text x="62.13" y="112.25000000000001" font-size="2" fill="#e0705a" text-anchor="middle">antena</text>
+<rect x="60.78" y="172.20000000000002" width="12.5" height="4" rx="1.5" fill="#f4f5f2" stroke="#1d2320" stroke-width="0.4"/>
+<text x="67.03" y="180.8" font-size="3" fill="#1d2320" text-anchor="middle">USB (programowanie)</text>
+<rect x="127.28" y="6.600000000000023" width="4" height="12.5" rx="1.5" fill="#f4f5f2" stroke="#1d2320" stroke-width="0.4"/>
+<text x="135.68" y="12.850000000000023" font-size="3" fill="#1d2320" text-anchor="middle" transform="rotate(90 135.68 12.850000000000023)">USB-C ładowanie</text>
+<rect x="122.18" y="71.40000000000002" width="3" height="32" fill="#e7c22e" fill-opacity="0.75"/>
+<text x="135.68" y="87.40000000000002" font-size="3" fill="#1d2320" text-anchor="middle" transform="rotate(90 135.68 87.40000000000002)">taśma FPC</text>
+<text x="64.34" y="-6" font-size="3.6" font-weight="600" fill="#1d2320" text-anchor="middle">Widok od przodu, przez ekran · 128,7 × 174,8 × 16,3 mm</text>
+<text x="64.34" y="187.8" font-size="2.6" fill="#5b6660" text-anchor="middle">przerywana turkusowa: obraz 98 × 163 mm, na środku · szara: matryca · szybka z pleksi 114,4 × 170,6 × 1</text>
+</svg>

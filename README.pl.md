@@ -221,13 +221,20 @@ Widok od przodu, czytnik w pionie, ekran jak przezroczysty. Zasady prowadzenia p
 
 ## 🖨️ Obudowa
 
+<p align="center"><img src="hardware/case/wizualizacja.png" alt="Zamknięta obudowa od przodu i od tyłu" width="760"></p>
+
+Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). Obudowa ma 128,7 × 174,8 × 16,3 mm i mieści całą elektronikę za matrycą. Obraz jest na środku: pas z lewej równoważy szerszą ramkę matrycy od strony taśmy FPC. Przed matrycą leży wymienna szybka z pleksi 1 mm (114,4 × 170,6 mm), a krawędzie są zaokrąglone, z tyłu mocniej, więc w ręce czytnik wydaje się cieńszy.
+
+<p align="center"><img src="hardware/case/uklad.svg" alt="Rozmieszczenie płytek w obudowie, widok od przodu" width="480"></p>
+
+- **Klapka:** joystick na słupkach, grzybek wystaje 1,5 mm. SET i RST to sprężynujące języczki z popychaczami, w płytkim okienku na łatkę ze skóry.
+- **Gniazda:** USB-C do ładowania w prawej ściance, USB ESP do programowania w dolnej.
+- **Miejsce na wtyki:** obok ESP jest wolne miejsce na wtyki Dupont na bocznych pinach.
+- **Kontrola:** wszystkie wymiary są zmiennymi, a plik sam sprawdza, czy płytki na siebie nie nachodzą.
+
+Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka z gniazdami na płytki. Gotowe pliki są w formatach STL i OBJ. Podglądy: `part = "closed"`, `"exploded"`, `"layout"`.
+
 ![Podgląd obudowy (widok rozłożony)](hardware/case/podglad.png)
-
-Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](hardware/case/czytnik_eink.scad). Wszystkie wymiary (panel, luzy, położenie baterii, ESP32 i ładowarki, gniazda USB-C, przycisk z tyłu) są zmiennymi, więc obudowę łatwo dopasować do innego egzemplarza wyświetlacza.
-
-Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka. Gotowe pliki są w formatach STL i OBJ.
-
-> Projekt obudowy odpowiada jeszcze wcześniejszemu rozmieszczeniu elektroniki. Nowy układ (joystick w klapce, gniazdo ładowania w prawej ściance, ESP na dole) opisuje [`docs/okablowanie.md`](docs/okablowanie.md).
 
 ---
 
