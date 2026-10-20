@@ -228,11 +228,12 @@ Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](hardware/case/czytnik_ei
 <p align="center"><img src="hardware/case/uklad.svg" alt="Rozmieszczenie płytek w obudowie, widok od przodu" width="480"></p>
 
 - **Klapka:** joystick na słupkach, grzybek wystaje 1,5 mm. SET i RST to sprężynujące języczki z popychaczami, w płytkim okienku na łatkę ze skóry.
+- **Wkręty:** dwa wkręty M2 w dolnej ściance, jak w telefonie, wkręcane w klocki na klapce. Zatrzaski na bokach zostają.
 - **Gniazda:** USB-C do ładowania w prawej ściance, USB ESP do programowania w dolnej.
 - **Miejsce na wtyki:** obok ESP jest wolne miejsce na wtyki Dupont na bocznych pinach.
 - **Kontrola:** wszystkie wymiary są zmiennymi, a plik sam sprawdza, czy płytki na siebie nie nachodzą.
 
-Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka z gniazdami na płytki. Gotowe pliki są w formatach STL i OBJ. Podglądy: `part = "closed"`, `"exploded"`, `"layout"`.
+Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka z gniazdami na płytki. Gotowe pliki są w formatach STL, OBJ i 3MF. Podglądy: `part = "closed"`, `"exploded"`, `"layout"`.
 
 ![Podgląd obudowy (widok rozłożony)](hardware/case/widok_rozlozony.png)
 
@@ -270,7 +271,7 @@ Kolejne wersje firmware'u można wgrywać przez tę samą stronę (plik `.bin`) 
 │   ├── siec.ino                   # Wi-Fi, serwer WWW, upload, OTA, captive portal
 │   ├── strona.h                   # strona WWW (HTML/CSS/JS w PROGMEM)
 │   └── gra.ino / gra.h            # kółko i krzyżyk
-├── hardware/case/                 # projekt OpenSCAD, podgląd, stl/, obj/
+├── hardware/case/                 # projekt OpenSCAD, podgląd, stl/, obj/, 3mf/
 ├── tests/                         # testy unittest, uruchamiane w GitHub Actions
 └── docs/                          # obrazki do README, rysunek okablowania, instrukcja dzielnika
 ```

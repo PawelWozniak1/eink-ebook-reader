@@ -228,11 +228,12 @@ A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.s
 <p align="center"><img src="hardware/case/uklad.svg" alt="Board layout inside the case, front view" width="480"></p>
 
 - **Back cover:** the joystick sits on posts, with the knob 1.5 mm proud. SET and RST are flexure keys with pushers, under a shallow recess for a leather patch.
+- **Screws:** two M2 screws in the bottom wall, like on a phone, going into bosses on the back cover. The side snaps stay.
 - **Ports:** USB-C charging in the right wall, ESP USB for programming in the bottom wall.
 - **Room for plugs:** free space beside the ESP for Dupont plugs on the side pins.
 - **Checks:** every dimension is a variable, and the file checks that no two boards overlap.
 
-It prints as three parts: the front bezel, a support plate behind the panel and the back cover with seats for the boards. Ready-made STL and OBJ files are included. Previews: `part = "closed"`, `"exploded"`, `"layout"`.
+It prints as three parts: the front bezel, a support plate behind the panel and the back cover with seats for the boards. Ready-made STL, OBJ and 3MF files are included. Previews: `part = "closed"`, `"exploded"`, `"layout"`.
 
 ![Case preview (exploded view)](hardware/case/widok_rozlozony.png)
 
@@ -270,7 +271,7 @@ Later firmware versions can be uploaded through the same page (a `.bin` file) or
 │   ├── siec.ino                   # Wi-Fi, web server, uploads, OTA, captive portal
 │   ├── strona.h                   # web page (HTML/CSS/JS in PROGMEM)
 │   └── gra.ino / gra.h            # tic-tac-toe
-├── hardware/case/                 # OpenSCAD source, preview, stl/, obj/
+├── hardware/case/                 # OpenSCAD source, preview, stl/, obj/, 3mf/
 ├── tests/                         # unittest, run on GitHub Actions
 └── docs/                          # README images, wiring drawing, divider guide
 ```

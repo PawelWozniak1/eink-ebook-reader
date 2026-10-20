@@ -79,6 +79,14 @@ key_len   = 6.5;           // dlugosc od zawiasu (w strone grzybka) do konca
 key_slot  = 0.8;           // szczelina wokol klawisza
 leather_t = 0.5;           // zaglebienie na latke ze skory nad klawiszami (0 = bez)
 
+/* [Wkrety w dolnej sciance (jak w telefonie)] */
+screws    = true;
+screw_d   = 2.0;           // wkret samogwintujacy do plastiku M2 (np. 2 x 6 mm)
+screw_pilot = 1.6;         // otwor w klocku klapki, w ktory wkret sam nacina gwint
+screw_head = 4.0;          // srednica lba
+screw_head_t = 1.0;        // zaglebienie na leb w sciance
+boss      = [7, 6, 7];     // klocek na klapce: szerokosc, glebokosc od rantu, wysokosc
+
 /* [Gniazda USB-C] */
 esp_usb_x = 18.4;          // srodek gniazda USB (prawego, nie COM) od lewej krawedzi plytki ESP
 usb_w = 12.5;              // otwor na wtyczke (oslonka wtyczki ~12 x 6)
@@ -116,6 +124,8 @@ div_pos = [rim_in + 0.5, esp_pos[1] + esp_size[1] + esp_ant + 3];  // nad lewa l
 tp_pos  = [R - tp_size[0],  U - tp_size[1]];
 pol_pos = [R - pol_size[0], tp_pos[1] - 3 - pol_size[1]];
 joy_pos = [rim_in + 0.5, U - joy_size[1]];
+screw_x = [rim_in + 10, W - rim_in - 10];   // po obu stronach ESP, z dala od wtykow
+screw_z = z_lid - boss[2]/2;
 bat_pos = [joy_pos[0] + joy_size[0] + 0.5 + bat_clr, U - 3 - bat_size[1]];  // u gory, 3 mm na wyprowadzenia
 
 // gniazda: [sciana, srodek wzdluz scianki, dlugosc, wysokosc srodka z]
@@ -145,7 +155,9 @@ footprints = [ // [nazwa, obrys czesci, obrys z ramka]
   ["TP4056",   box(tp_pos, tp_size),   box(tp_pos, tp_size, loc)],
   ["Pololu",   box(pol_pos, pol_size), box(pol_pos, pol_size, loc)],
   ["bateria",  box(bat_pos, bat_size, bat_clr), box(bat_pos, bat_size, bat_clr)],
-  ["joystick", box(joy_pos, joy_size), box(joy_pos, joy_size)]
+  ["joystick", box(joy_pos, joy_size), box(joy_pos, joy_size)],
+  ["wkret lewy", box([screw_x[0] - boss[0]/2, rim_in], [boss[0], boss[1]]), box([screw_x[0] - boss[0]/2, rim_in], [boss[0], boss[1]], loc)],
+  ["wkret prawy", box([screw_x[1] - boss[0]/2, rim_in], [boss[0], boss[1]]), box([screw_x[1] - boss[0]/2, rim_in], [boss[0], boss[1]], loc)]
 ];
 for (i = [0 : len(footprints) - 1]) {
   f = footprints[i][1];
@@ -242,6 +254,11 @@ module front_shell() {
     along("r", wall + 5, ih - 10, 0.65, wall);
     along("t", wall + 5, iw - 10, 0.65, wall);
     port_cuts();
+    // wkrety: otwor przelotowy i zaglebienie na leb
+    if (screws) for (x = screw_x) translate([x, -1, screw_z]) rotate([-90, 0, 0]) {
+      cylinder(d = screw_d + 0.3, h = wall + 2, $fn = 24);
+      cylinder(d = screw_head + 0.4, h = 1 + screw_head_t, $fn = 32);
+    }
   }
 }
 
@@ -268,6 +285,9 @@ module lid() {
         translate([W - rim_in - 1, py + fpc_center_y - (fpc_w + 6)/2, z_cav - 1])
           cube([rim_t + fit + 2, fpc_w + 6, cav + 1]);
       }
+      // klocki na wkrety przy dolnym rancie
+      if (screws) for (x = screw_x)
+        translate([x - boss[0]/2, wall + fit, z_lid - boss[2]]) cube([boss[0], rim_in - wall - fit + boss[1], boss[2] + 0.01]);
       // zatrzaski
       for (s = snaps) along(s[0], s[1], 14, 0.6, wall + fit + 0.15);
       // gniazda na czesci
@@ -299,6 +319,9 @@ module lid() {
     }
     // otwory USB
     port_cuts();
+    // otwory na wkrety w klockach
+    if (screws) for (x = screw_x)
+      translate([x, wall - 0.5, screw_z]) rotate([-90, 0, 0]) cylinder(d = screw_pilot, h = rim_in - wall + boss[1] - 1, $fn = 24);
     // wciecie do podwazania klapki
     translate([-1, H/2 - 6, T - 0.8]) cube([3, 12, 1]);
   }

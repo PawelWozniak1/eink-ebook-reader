@@ -44,6 +44,14 @@
 <text x="135.68" y="12.850000000000023" font-size="3" fill="#1d2320" text-anchor="middle" transform="rotate(90 135.68 12.850000000000023)">USB-C ładowanie</text>
 <rect x="122.18" y="71.40000000000002" width="3" height="32" fill="#e7c22e" fill-opacity="0.75"/>
 <text x="135.68" y="87.40000000000002" font-size="3" fill="#1d2320" text-anchor="middle" transform="rotate(90 135.68 87.40000000000002)">taśma FPC</text>
+<rect x="9.85" y="165.45000000000002" width="7" height="7.35" fill="#6d7570" stroke="#1b1f1d" stroke-width="0.3"/>
+<circle cx="13.35" cy="173.8" r="2" fill="#c9ced4" stroke="#1d2320" stroke-width="0.4"/>
+<path d="M12.35 173.8 H14.35 M13.35 172.8 V174.8" stroke="#1d2320" stroke-width="0.35"/>
+<rect x="111.83000000000001" y="165.45000000000002" width="7" height="7.35" fill="#6d7570" stroke="#1b1f1d" stroke-width="0.3"/>
+<circle cx="115.33000000000001" cy="173.8" r="2" fill="#c9ced4" stroke="#1d2320" stroke-width="0.4"/>
+<path d="M114.33000000000001 173.8 H116.33000000000001 M115.33000000000001 172.8 V174.8" stroke="#1d2320" stroke-width="0.35"/>
+<text x="13.35" y="180.8" font-size="3" fill="#1d2320" text-anchor="middle">wkręt M2</text>
+<text x="115.33000000000001" y="180.8" font-size="3" fill="#1d2320" text-anchor="middle">wkręt M2</text>
 <text x="64.34" y="-6" font-size="3.6" font-weight="600" fill="#1d2320" text-anchor="middle">Widok od przodu, przez ekran · 128,7 × 174,8 × 16,3 mm</text>
 <text x="64.34" y="187.8" font-size="2.6" fill="#5b6660" text-anchor="middle">przerywana turkusowa: obraz 98 × 163 mm, na środku · szara: matryca · szybka z pleksi 114,4 × 170,6 × 1</text>
 </svg>
