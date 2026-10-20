@@ -234,7 +234,7 @@ Projekt parametryczny w OpenSCAD: [`czytnik_eink.scad`](hardware/case/czytnik_ei
 
 Trzy części do druku: przednia ramka, płytka podporowa pod panel i tylna klapka z gniazdami na płytki. Gotowe pliki są w formatach STL i OBJ. Podglądy: `part = "closed"`, `"exploded"`, `"layout"`.
 
-![Podgląd obudowy (widok rozłożony)](hardware/case/podglad.png)
+![Podgląd obudowy (widok rozłożony)](hardware/case/widok_rozlozony.png)
 
 ---
 

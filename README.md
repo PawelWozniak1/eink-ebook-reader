@@ -234,7 +234,7 @@ A parametric OpenSCAD design: [`czytnik_eink.scad`](hardware/case/czytnik_eink.s
 
 It prints as three parts: the front bezel, a support plate behind the panel and the back cover with seats for the boards. Ready-made STL and OBJ files are included. Previews: `part = "closed"`, `"exploded"`, `"layout"`.
 
-![Case preview (exploded view)](hardware/case/podglad.png)
+![Case preview (exploded view)](hardware/case/widok_rozlozony.png)
 
 ---
 
